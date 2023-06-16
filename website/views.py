@@ -251,6 +251,7 @@ def home():
                 if search_information[len(search_information)-2] in each_position:
                     if int(quantity) > int(each_position[2]):
                         flash('Trying to sell your imaginary shares???', category='error')
+                        return render_template("home.html", user=current_user, position_calculations=calculate_positions, searched=False, trade_history=trade_history, curAccountValue=accountValue, currentCash=cashCurrent)
                     else:
                         new_trade = Trade(symbol=search_information[len(search_information)-2], orderType="SELL", price=search_information[len(search_information)-1], quantity=quantity, user_id=userCurrent.id)
                         db.session.add(new_trade)
@@ -288,6 +289,7 @@ def home():
                     
                 else:
                     flash('Trying to sell your imaginary shares???', category='error')
+                    return render_template("home.html", user=current_user, position_calculations=calculate_positions, searched=False, trade_history=trade_history, curAccountValue=accountValue, currentCash=cashCurrent)
 
 
     return render_template("home.html", user=current_user, position_calculations=calculate_positions, searched=False, trade_history=trade_history, curAccountValue=accountValue, currentCash=cashCurrent)
