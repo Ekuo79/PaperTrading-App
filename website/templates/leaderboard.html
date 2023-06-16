@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %} Leaderboard {% endblock %}
+
+{% block content%}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+</style>
+
+<h1>Leaderboard</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Rank</th>
+            <th>Username</th>
+            <th>Account Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for userName, value in sorted_leaderboard.items() %}
+            <tr>
+                <td>{{ loop.index }}.</td>
+                <td>{{ userName }}</td>
+                <td>{{ value }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

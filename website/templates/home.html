@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+
+{% block content%}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    }
+
+    .search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    padding-bottom: 50px;
+    }
+
+    #search_input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 300px;
+    }
+
+    #search-button {
+    background-color: #159ad8;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    }
+    h2 {
+        text-align: center;
+        padding-top: 20px;
+    }
+</style>
+
+<form method="POST">
+    <h2>Search for a stock</h2>
+    <div class="search-container">
+        <label for="search_input"></label>
+        <input 
+            type="text" 
+            id="search_input" 
+            placeholder="Enter a stock symbol..."
+            name="search_input"
+            >
+        <button type="submit" name = "search_button" id="search-button">Search</button>
+    </div>
+    
+    <div id="search-results"></div>
+
+
+{% if searched %}
+<style>
+    .stock-trade {
+        padding-bottom: 50px;
+        transition: all 1s;
+    }
+    .fiveD-button, .oneM-button, .threeM-button, .oneY-button {
+        padding: 5px;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        width: 24%;
+        background-color: #159ad8
+    }
+    .buy-button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        width: 48%;
+        background-color: #4CAF50;
+    }
+    .sell-button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        cursor: pointer;
+        width: 48%;
+        background-color: #f44336;
+    }
+</style>
+    <div class="stock-trade">
+        <p><font size = "+2">{{search_symbol}} Stock Price: {{search_price}}</font></p>
+        {% if search_price != None and search_price != "This stock symbol does not exists!": %}
+        
+
+        <button type="submit" name="fiveD_button" class="fiveD-button">5D</button>
+        <button type="submit" name="oneM_button" class="oneM-button">1M</button>
+        <button type="submit" name="threeM_button" class="threeM-button">3M</button>
+        <button type="submit" name="oneY_button" class="oneY-button">1Y</button>
+
+
+        <canvas id="lineChart"></canvas>
+        <script>
+            var date_list = {{ date_list | tojson }};
+            var close_list = {{ close_list | tojson }};
+            var title = {{ title | tojson }};
+            // Create a new line chart and use the date_list and close_list
+            var ctx = document.getElementById('lineChart').getContext('2d');
+            var lineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: date_list,
+                    datasets: [{
+                        label: 'Close Price',
+                        data: close_list,
+                        borderColor: 'blue',
+                        fill: false,
+                        cubicInterpolationMode: 'monotone'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            },
+                            ticks: {
+                                maxTicksLimit: 6 // Adjust the number of ticks displayed
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Close Price'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: title,
+                            font: {
+                                size: 32
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+
+
+        <p>Cash available: {{currentCash}}</p>
+        <div class="search-container">
+            <label for="search_input"><font size = "+1">Quantity:  </font></label>
+            <input 
+                type="text" 
+                id="quantity_input" 
+                placeholder="Enter a quantity"
+                name="quantity_input"
+                >
+        </div>
+
+
+        <button type="submit" name="buy_button" class="buy-button">Buy</button>
+        <button type="submit" name="sell_button" class="sell-button" style="float: right">Sell</button>
+        {% endif %}
+    </div>
+    
+{% endif %}
+
+</form>
+
+
+
+<h4>Account Value: {{curAccountValue}}</h2>
+<h4>Cash: {{currentCash}}</h2>
+
+<br/>
+<br/>
+
+
+<h1>Positions</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Market Value</th>
+            <th>Average Cost Basis per Share</th>
+            <th>Gains/Losses</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for position in position_calculations %}
+            <tr>
+                <td>{{ position[0] }}</td>
+                <td>{{ position[1] }}</td>
+                <td>{{ position[2] }}</td>
+                <td>{{ position[3] }}</td>
+                <td>{{ position[4] }}</td>
+                <td>{{ position[5] }}</td>
+                
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
+<h1>Trade History</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Order Type</th>
+            <th>Qty</th>
+            <th>Price Traded At</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for trade in trade_history %}
+            <tr>
+                <td>{{ trade[0] }}</td>
+                <td>{{ trade[1] }}</td>
+                <td>{{ trade[2] }}</td>
+                <td>{{ trade[3] }}</td>
+                <td>{{ trade[4] }}</td>     
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}
