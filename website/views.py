@@ -8,7 +8,7 @@ import locale
 from sqlalchemy import desc
 
 views = Blueprint('views', __name__)
-
+locale.setlocale( locale.LC_ALL, 'en_US.utf8')
 @views.route('/')
 def menu():
     return render_template('menu.html')
@@ -143,7 +143,6 @@ def home():
     trades = userCurrent.trades
     print(search_information)
     
-    locale.setlocale( locale.LC_ALL, 'en_US' )
     cashCurrent = locale.currency(float(userCurrent.portfolios[len(userCurrent.portfolios) - 1].cash), grouping = True)
     def showTrades():
         for trade in trades:
@@ -158,7 +157,7 @@ def home():
     calculate_positions = calculatePositions(trades)
     trade_history = calculate_trade_history(trades)
     curAccountValue = calculateAccountValue(userCurrent, calculate_positions)
-    locale.setlocale( locale.LC_ALL, 'en_US' )
+
     accountValue = locale.currency(curAccountValue, grouping = True)
     
     
@@ -238,7 +237,7 @@ def home():
                 db.session.add(new_portfolio)
                 db.session.commit()
 
-                locale.setlocale( locale.LC_ALL, 'en_US' )
+               
                 accountValue = locale.currency(float(accountValue), grouping = True)
                 cash = locale.currency(float(cash), grouping = True)
 
@@ -313,7 +312,7 @@ def leaderboard():
 
     sorted_leaderboard = dict(sorted(all_account_values.items(), key=lambda item: item[1], reverse=True))
     
-    locale.setlocale( locale.LC_ALL, 'en_US' )
+   
     for key in sorted_leaderboard:
         sorted_leaderboard[key] = locale.currency(sorted_leaderboard[key], grouping = True)
 
