@@ -4,11 +4,9 @@ from . import db
 from .models import User, Trade, Portfolio
 import yfinance as yf
 from datetime import datetime, timedelta
-import locale
 from sqlalchemy import desc
 
 views = Blueprint('views', __name__)
-locale.setlocale( locale.LC_ALL, 'en_US.utf8')
 @views.route('/')
 def menu():
     return render_template('menu.html')
@@ -143,7 +141,7 @@ def home():
     trades = userCurrent.trades
     print(search_information)
     
-    cashCurrent = locale.currency(float(userCurrent.portfolios[len(userCurrent.portfolios) - 1].cash), grouping = True)
+    cashCurrent = "${:,.2f}".format(float(userCurrent.portfolios[len(userCurrent.portfolios) - 1].cash))
     def showTrades():
         for trade in trades:
             print(f"Trade ID: {trade.id}")
@@ -158,7 +156,7 @@ def home():
     trade_history = calculate_trade_history(trades)
     curAccountValue = calculateAccountValue(userCurrent, calculate_positions)
 
-    accountValue = locale.currency(curAccountValue, grouping = True)
+    accountValue = "${:,.2f}".format(curAccountValue)
     
     
     if request.method == "POST":
@@ -238,8 +236,8 @@ def home():
                 db.session.commit()
 
                
-                accountValue = locale.currency(float(accountValue), grouping = True)
-                cash = locale.currency(float(cash), grouping = True)
+                accountValue = "${:,.2f}".format(float(accountValue))
+                cash = "${:,.2f}".format(float(cash))
 
                 return render_template("home.html", user=current_user, position_calculations=calculate_positions, searched=False, trade_history=trade_history, curAccountValue=accountValue, currentCash=cash)
             
@@ -283,8 +281,8 @@ def home():
                         db.session.add(new_portfolio)
                         db.session.commit()
 
-                        accountValue = locale.currency(float(accountValue), grouping = True)
-                        cash = locale.currency(float(cash), grouping = True)
+                        accountValue = "${:,.2f}".format(float(accountValue))
+                        cash = "${:,.2f}".format(float(cash))
 
                         return render_template("home.html", user=current_user, position_calculations=calculate_positions, searched=False, trade_history=trade_history, curAccountValue=accountValue, currentCash=cash)
                     
@@ -314,7 +312,7 @@ def leaderboard():
     
    
     for key in sorted_leaderboard:
-        sorted_leaderboard[key] = locale.currency(sorted_leaderboard[key], grouping = True)
+        sorted_leaderboard[key] = "${:,.2f}".format(sorted_leaderboard[key])
 
 
     return render_template("leaderboard.html", sorted_leaderboard=sorted_leaderboard, user=current_user)
