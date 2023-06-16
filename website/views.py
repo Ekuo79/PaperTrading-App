@@ -287,9 +287,8 @@ def home():
 
                         return render_template("home.html", user=current_user, position_calculations=calculate_positions, searched=False, trade_history=trade_history, curAccountValue=accountValue, currentCash=cash)
                     
-                else:
-                    flash('Trying to sell your imaginary shares???', category='error')
-                    return render_template("home.html", user=current_user, position_calculations=calculate_positions, searched=False, trade_history=trade_history, curAccountValue=accountValue, currentCash=cashCurrent)
+                
+            flash('Trying to sell your imaginary shares???', category='error')
 
 
     return render_template("home.html", user=current_user, position_calculations=calculate_positions, searched=False, trade_history=trade_history, curAccountValue=accountValue, currentCash=cashCurrent)
