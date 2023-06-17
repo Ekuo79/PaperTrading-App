@@ -17,6 +17,7 @@ search_information = [0,0]
 trade_history = []
 search_symbol = ""
 search_price = ""
+calculate_positions = []
 
 def calculatePositions(trades):
         all_positions = []
@@ -137,10 +138,10 @@ def stockData(symbol, timeFrame, timeInterval):
 def home():
     global search_information
     global trade_history
+    global calculate_positions
     userCurrent = current_user
     trades = userCurrent.trades
-    print(search_information)
-    
+
     cashCurrent = "${:,.2f}".format(float(userCurrent.portfolios[len(userCurrent.portfolios) - 1].cash))
     def showTrades():
         for trade in trades:
@@ -152,8 +153,9 @@ def home():
             print(f"Date: {trade.date}")
             print("----------")
     
-    calculate_positions = calculatePositions(trades)
-    trade_history = calculate_trade_history(trades)
+    if not calculate_positions:
+        calculate_positions = calculatePositions(trades)
+        trade_history = calculate_trade_history(trades)
     curAccountValue = calculateAccountValue(userCurrent, calculate_positions)
 
     accountValue = "${:,.2f}".format(curAccountValue)
@@ -196,6 +198,7 @@ def home():
 
         elif 'buy_button' in request.form:
             quantity = request.form.get('quantity_input')
+            print (quantity)
             last_portfolio = userCurrent.portfolios[len(userCurrent.portfolios) - 1]
             cash = float(last_portfolio.cash)
 
@@ -317,4 +320,3 @@ def leaderboard():
 
 
     return render_template("leaderboard.html", sorted_leaderboard=sorted_leaderboard, user=current_user)
-
