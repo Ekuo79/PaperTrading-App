@@ -174,10 +174,63 @@
                 name="quantity_input"
                 >
         </div>
+        
+        <script>
+            function submitBuy() {
+                const buyButton = document.getElementById('buy_button');
+                buyButton.disabled = true;
+
+                var form = document.createElement('form')
+                form.method = 'post';
+                form.action = '/home'
+
+                var input1 = document.createElement('input');
+                input1.type = 'buy_button';
+                input1.name = 'buy_button';
+                input1.value = '';
+
+                var input2 = document.createElement('input');
+                input2.type = 'quantity_input';
+                input2.name = 'quantity_input';
+                let value2 = document.getElementById("quantity_input")
+                input2.value = value2.value;
+
+                form.appendChild(input1)
+                form.appendChild(input2)
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+            function submitSell() {
+                const sellButton = document.getElementById('sell_button');
+                sellButton.disabled = true;
+
+                var form = document.createElement('form')
+                form.method = 'post';
+                form.action = '/home'
+
+                var input1 = document.createElement('input');
+                input1.type = 'sell_button';
+                input1.name = 'sell_button';
+                input1.value = '';
+
+                var input2 = document.createElement('input');
+                input2.type = 'quantity_input';
+                input2.name = 'quantity_input';
+                let value2 = document.getElementById("quantity_input")
+                input2.value = value2.value;
+
+                form.appendChild(input1)
+                form.appendChild(input2)
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        </script>
 
 
-        <button type="submit" name="buy_button" class="buy-button">Buy</button>
-        <button type="submit" name="sell_button" class="sell-button" style="float: right">Sell</button>
+        <button id="buy_button" type="submit" name="buy_button" class="buy-button" onclick="submitBuy()">Buy</button>
+        <button id="sell_button" type="submit" name="sell_button" class="sell-button" onclick="submitSell()" style="float: right">Sell</button>
         {% endif %}
     </div>
     
