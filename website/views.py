@@ -19,6 +19,12 @@ search_symbol = ""
 search_price = ""
 calculate_positions = []
 
+def get_stock_price(stock_symbol):
+    ticker = yf.Ticker(stock_symbol)
+    history_data = ticker.history(period="1d")
+    stock_price = history_data['Close'][0]
+    return stock_price
+
 def calculatePositions(trades):
         all_positions = []
         for trade in trades:
@@ -49,9 +55,11 @@ def calculatePositions(trades):
 
             if adding:
                 calculation.append(trade.symbol)
-            
-                stock = yf.Ticker(trade.symbol)
-                price = stock.info.get('currentPrice')
+
+                stock_symbol = trade.symbol
+                price = get_stock_price(stock_symbol)
+                #stock = yf.Ticker(trade.symbol)
+                #price = stock.info.get('currentPrice')
                 calculation.append(price)
             
                 calculation.append(trade.quantity)
@@ -122,8 +130,11 @@ def stockData(symbol, timeFrame, timeInterval):
     date_list_str.append(today.strftime('%Y-%m-%d %H:%M:%S'))
 
     close_list = data['Close'].tolist()
-    search_stock = yf.Ticker(symbol)
-    search_price = search_stock.info.get('currentPrice')
+    
+    search_price = get_stock_price(symbol)
+    #search_stock = yf.Ticker(symbol)
+    #search_price = search_stock.info.get('currentPrice')
+    
     close_list.append(search_price)
 
     all_information = []
@@ -168,8 +179,9 @@ def home():
             search_symbol = request.form.get('search_input').upper()
             try:
                 global search_price
-                search_stock = yf.Ticker(search_symbol)
-                search_price = search_stock.info.get('currentPrice')
+                #search_stock = yf.Ticker(search_symbol)
+                #search_price = search_stock.info.get('currentPrice')
+                search_price = get_stock_price(search_symbol)
                 search_information[0] = search_symbol
                 if search_price != None:
                     search_information[1] = search_price
