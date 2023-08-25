@@ -58,8 +58,6 @@ def calculatePositions(trades):
 
                 stock_symbol = trade.symbol
                 price = get_stock_price(stock_symbol)
-                #stock = yf.Ticker(trade.symbol)
-                #price = stock.info.get('currentPrice')
                 calculation.append(price)
             
                 calculation.append(trade.quantity)
@@ -151,9 +149,13 @@ def home():
     global trade_history
     global calculate_positions
     userCurrent = current_user
+
     trades = userCurrent.trades
 
+    
+
     cashCurrent = "${:,.2f}".format(float(userCurrent.portfolios[len(userCurrent.portfolios) - 1].cash))
+
     def showTrades():
         for trade in trades:
             print(f"Trade ID: {trade.id}")
@@ -164,9 +166,9 @@ def home():
             print(f"Date: {trade.date}")
             print("----------")
     
-    if not calculate_positions:
-        calculate_positions = calculatePositions(trades)
-        trade_history = calculate_trade_history(trades)
+    
+    calculate_positions = calculatePositions(trades)
+    trade_history = calculate_trade_history(trades)
     curAccountValue = calculateAccountValue(userCurrent, calculate_positions)
 
     accountValue = "${:,.2f}".format(curAccountValue)
@@ -305,7 +307,7 @@ def home():
                 
             flash('Trying to sell your imaginary shares???', category='error')
 
-
+    
     return render_template("home.html", user=current_user, position_calculations=calculate_positions, searched=False, trade_history=trade_history, curAccountValue=accountValue, currentCash=cashCurrent)
 
 
